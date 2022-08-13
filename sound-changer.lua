@@ -31,7 +31,7 @@ function SoundChanger:update(dt)
         if nowValue < scValue then
           nowValue = nowValue + 1
           player.synth:controlChange(scType, nowValue)
-        else
+        elseif nowValue > scValue then
           nowValue = nowValue - 1
           player.synth:controlChange(scType, nowValue)
         end
