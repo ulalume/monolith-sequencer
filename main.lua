@@ -1,6 +1,7 @@
 package.path = package.path .. ';' .. love.filesystem.getSource() .. '/lua_modules/share/lua/5.1/?.lua'
 package.cpath = package.cpath .. ';' .. love.filesystem.getSource() .. '/lua_modules/share/lua/5.1/?.so'
 
+local table2 = require "util.table2"
 local color = require "graphics.color"
 local Rainbow = require "graphics.rainbow"
 local rainbowLine = Rainbow:new(1 / 30,
@@ -26,7 +27,6 @@ local monolith = require "monolith.core".new({ ledColorBits = 3 })
 
 local musicSystem
 local soundChanger
-
 local board = {
   0, 0, 0, 0, 0, 0, 0, 0,
   0, 0, 0, 0, 0, 0, 0, 0,
@@ -57,6 +57,23 @@ local function y_p()
 end
 
 local cursorMove = { { x_m, x_p, y_m, y_p }, { x_p, x_m, y_p, y_m }, { y_p, y_m, x_m, x_p }, { y_m, y_p, x_p, x_m } }
+local nowBgm = 1
+local function changeBgm(bgm)
+  local names = { "bgm", "bgm2", "bgm3", "bgm4", "bgm5" }
+  local copiedContols = {}
+  for playerNum = 1, #musicSystem.players do
+    print(musicSystem.players[playerNum].musicTable[names[nowBgm]])
+    table.insert(copiedContols, table2.copy(musicSystem.players[playerNum].musicTable[names[nowBgm]].controlls))
+  end
+
+  nowBgm = bgm
+  musicSystem:playAllPlayer(names[bgm])
+
+  for playerNum = 1, #musicSystem.players do
+    local player = musicSystem.players[playerNum]
+    player.synth:controlChangeAll(copiedContols[playerNum])
+  end
+end
 
 function love.load()
   if require "util.osname" == "Linux" then
@@ -72,6 +89,7 @@ function love.load()
   musicSystem = require("music.music_system"):new({ true, true, true, true }, devices, musicPathTable, priorityTable)
   soundChanger = require "sound-changer":new(musicSystem)
 
+  nowBgm = 1
   musicSystem:playAllPlayer("bgm")
 end
 
@@ -150,6 +168,12 @@ function love.draw()
     end
     love.graphics.setColor(rainbowLine:color(x + y):rgb())
     love.graphics.rectangle("line", x * 16, y * 16, 16, 16)
+  end
+  local cornerStones = math.abs(board[1]) + math.abs(board[8]) + math.abs(board[64]) + math.abs(board[57] + 1)
+
+  if cornerStones ~= nowBgm then
+    nowBgm = cornerStones
+    changeBgm(nowBgm)
   end
 
   love.graphics.setColor(0, 1, 0)
