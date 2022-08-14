@@ -1,6 +1,10 @@
 package.path = package.path .. ';' .. love.filesystem.getSource() .. '/lua_modules/share/lua/5.1/?.lua'
 package.cpath = package.cpath .. ';' .. love.filesystem.getSource() .. '/lua_modules/share/lua/5.1/?.so'
 
+local color = require "graphics.color"
+local Rainbow = require "graphics.rainbow"
+local rainbow = Rainbow:new(1 / 20, { color.black, color.white })
+
 local monolith = require "monolith.core".new({ ledColorBits = 3 })
 
 local musicSystem
@@ -17,6 +21,8 @@ local board = {
 }
 local cursorX = 0
 local cursorY = 0
+
+local operationTimer = require "util.timer":new(3, 1)
 
 local function x_m()
   cursorX = math.max(0, cursorX - 1)
@@ -61,6 +67,7 @@ end
 function love.update(dt)
   musicSystem:update(dt)
   soundChanger:update(dt)
+  operationTimer:executable(dt)
 
   for i = 1, 4 do
     if monolith.input:getButtonDown(i, "a") then
@@ -71,6 +78,7 @@ function love.update(dt)
         stone = -1
       end
       board[cursorX + cursorY * 8 + 1] = stone
+      operationTimer:reset()
     end
     if monolith.input:getButtonDown(i, "b") then
       local stone = board[cursorX + cursorY * 8 + 1]
@@ -80,6 +88,7 @@ function love.update(dt)
         stone = 1
       end
       board[cursorX + cursorY * 8 + 1] = stone
+      operationTimer:reset()
     end
   end
 
@@ -90,13 +99,17 @@ function love.update(dt)
   for i = 1, 4 do
     if monolith.input:getButtonDown(i, "left") then
       cursorMove[i][1]()
+      operationTimer:reset()
     elseif monolith.input:getButtonDown(i, "right") then
       cursorMove[i][2]()
+      operationTimer:reset()
     end
     if monolith.input:getButtonDown(i, "up") then
       cursorMove[i][3]()
+      operationTimer:reset()
     elseif monolith.input:getButtonDown(i, "down") then
       cursorMove[i][4]()
+      operationTimer:reset()
     end
   end
 
@@ -138,8 +151,10 @@ function love.draw()
     changeBgm(cornerStones)
   end
   ]]
-  love.graphics.setColor(0, 1, 0)
-  love.graphics.rectangle("line", cursorX * 16, cursorY * 16, 16, 16)
+  if not operationTimer:isLimit() then
+    love.graphics.setColor(rainbow:color():rgb())
+    love.graphics.rectangle("line", cursorX * 16, cursorY * 16, 16, 16)
+  end
 
   monolith:endDraw()
 
