@@ -72,7 +72,7 @@ function _M.new(host, port, path)
         status = STATUS.TCPOPENING,
         socket = socket.tcp(),
     }
-    m.socket:settimeout(1)
+    m.socket:settimeout(0)
     m.socket:connect(host, port)
     setmetatable(m, _M)
     return m
