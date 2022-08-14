@@ -172,8 +172,7 @@ function love.draw()
   local cornerStones = math.abs(board[1]) + math.abs(board[8]) + math.abs(board[64]) + math.abs(board[57] + 1)
 
   if cornerStones ~= nowBgm then
-    nowBgm = cornerStones
-    changeBgm(nowBgm)
+    changeBgm(cornerStones)
   end
 
   love.graphics.setColor(0, 1, 0)
