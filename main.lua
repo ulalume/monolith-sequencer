@@ -62,11 +62,11 @@ local function changeBgm(bgm)
   local names = { "bgm", "bgm2", "bgm3", "bgm4", "bgm5" }
   local copiedContols = {}
   for playerNum = 1, #musicSystem.players do
-    print(musicSystem.players[playerNum].musicTable[names[nowBgm]])
     table.insert(copiedContols, table2.copy(musicSystem.players[playerNum].musicTable[names[nowBgm]].controlls))
   end
 
   nowBgm = bgm
+  print(names[bgm])
   musicSystem:playAllPlayer(names[bgm])
 
   for playerNum = 1, #musicSystem.players do
