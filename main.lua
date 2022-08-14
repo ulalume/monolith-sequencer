@@ -6,6 +6,32 @@ local json = require "rxi-json-lua"
 local color = require "graphics.color"
 local Rainbow = require "graphics.rainbow"
 local rainbow = Rainbow:new(1 / 20, { color.black, color.white })
+local rainbowLine = Rainbow:new(1 / 30,
+  { color.black, color.black, color.black, color.black, color.black, color.black, color.black, color.black, color.black,
+    color.black, color.black, color.black, color.black, color.black, color.black, color.black, color.black, color.black,
+    color.black, color.black, color.black, color.black, color.black, color.black, color.black, color.black, color.black,
+    color.black, color.black, color.black, color.black, color.black, color.black, color.black, color.black, color.black,
+    color.black, color.black, color.black, color.black, color.black, color.black, color.black, color.black, color.black,
+    color.black, color.black, color.black, color.black, color.black, color.black, color.black, color.black, color.black,
+    color.black, color.black, color.black, color.black, color.black, color.black, color.black, color.black, color.black,
+    color.black, color.black, color.black, color.black, color.black, color.black, color.black, color.black, color.black,
+    color.black, color.black, color.black, color.black, color.black, color.black, color.blue, color.cyan, color.red,
+    color.yellow, color.white, color.yellow, color.red, color.cyan, color.blue })
+local rainbowStone = Rainbow:new(1 / 30,
+  { color.white, color.white, color.white, color.white, color.white, color.white, color.white, color.white, color.white,
+    color.white, color.white, color.white, color.white, color.white, color.white, color.white, color.white, color.white,
+    color.white, color.white, color.white, color.white, color.white, color.white, color.white, color.white, color.white,
+    color.white, color.white, color.white, color.white, color.white, color.white, color.white, color.white, color.white,
+    color.white, color.white, color.white, color.white, color.white, color.white, color.white, color.white, color.white,
+    color.white, color.white, color.white, color.white, color.white, color.white, color.white, color.white, color.white,
+    color.white,
+    color.white, color.white, color.white, color.white, color.white, color.white, color.white, color.white, color.white,
+    color.white,
+    color.white, color.white, color.white, color.white, color.white, color.white, color.white, color.white, color.white,
+    color.white,
+    color.white, color.white, color.white, color.white, color.white, color.yellow, color.cyan, color.blue, color.cyan,
+    color.white, color.yellow, color.white })
+
 
 local monolith = require "monolith.core".new({ ledColorBits = 3 })
 
@@ -159,19 +185,21 @@ end
 
 function love.draw()
   monolith:beginDraw()
-  love.graphics.setColor(1, 1, 1)
   for i = 1, #board do
     local stone = board[i]
     local x = (i - 1) % 8
     local y = (i - 1 - x) / 8
     if stone ~= 0 then
       if stone == -1 then
+        love.graphics.setColor(rainbowStone:color(x + y):rgb())
         love.graphics.draw(img1, x * 16, y * 16)
       end
       if stone == 1 then
+        love.graphics.setColor(rainbowStone:color(x + y):rgb())
         love.graphics.draw(img2, x * 16, y * 16)
       end
     end
+    love.graphics.setColor(rainbowLine:color(x + y):rgb())
     love.graphics.rectangle("line", x * 16, y * 16, 16, 16)
   end
 
