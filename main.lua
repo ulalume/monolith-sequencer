@@ -1,6 +1,8 @@
 package.path = package.path .. ';' .. love.filesystem.getSource() .. '/lua_modules/share/lua/5.1/?.lua'
 package.cpath = package.cpath .. ';' .. love.filesystem.getSource() .. '/lua_modules/share/lua/5.1/?.so'
 
+local json = require "rxi-json-lua"
+
 local color = require "graphics.color"
 local Rainbow = require "graphics.rainbow"
 local rainbow = Rainbow:new(1 / 20, { color.black, color.white })
@@ -43,6 +45,34 @@ end
 local cursorMove = { { x_m, x_p, y_m, y_p }, { x_p, x_m, y_p, y_m }, { y_p, y_m, x_m, x_p }, { y_m, y_p, x_p, x_m } }
 
 
+local client
+
+local function newConnection()
+  client = require "websocket".new("127.0.0.1", 5001, "/")
+  function client:onmessage(message)
+    print(message)
+    local b = json.decode(message)
+    if #b == 64 then
+      board = b
+    end
+  end
+
+  function client:onerror(error)
+    print("error: " .. error)
+    client:close()
+    client.socket:close()
+    newConnection()
+  end
+
+  function client:onopen()
+    self:send("client connect")
+  end
+
+  function client:onclose(code, reason)
+    print("closecode: " .. code .. ", reason: " .. reason)
+  end
+end
+
 local img1, img2
 function love.load()
   img1 = love.graphics.newImage("assets/image/check.png")
@@ -62,9 +92,12 @@ function love.load()
   soundChanger = require "sound-changer":new(musicSystem)
 
   musicSystem:playAllPlayer("bgm")
+
+  newConnection()
 end
 
 function love.update(dt)
+  client:update()
   musicSystem:update(dt)
   soundChanger:update(dt)
   operationTimer:executable(dt)
@@ -158,5 +191,7 @@ end
 
 function love.quit()
   musicSystem:gc()
-  require "util.open_launcher" ()
+  if require "util.osname" == "Linux" then
+    require "util.open_launcher" ()
+  end
 end
