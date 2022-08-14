@@ -1,6 +1,27 @@
 package.path = package.path .. ';' .. love.filesystem.getSource() .. '/lua_modules/share/lua/5.1/?.lua'
 package.cpath = package.cpath .. ';' .. love.filesystem.getSource() .. '/lua_modules/share/lua/5.1/?.so'
 
+local color = require "graphics.color"
+local Rainbow = require "graphics.rainbow"
+local rainbowLine = Rainbow:new(1 / 30,
+  { color.black, color.black, color.black, color.black, color.black, color.black, color.black, color.black, color.black,
+    color.black, color.black, color.black, color.black, color.black, color.black, color.black, color.black, color.black,
+    color.black, color.black, color.black, color.black, color.black, color.black, color.black, color.black, color.black,
+    color.black, color.black, color.black, color.black, color.black, color.black, color.blue, color.cyan, color.red,
+    color.yellow, color.white, color.yellow, color.red, color.cyan, color.blue })
+local rainbowStone1 = Rainbow:new(1 / 30,
+  { color.red, color.red, color.red, color.red, color.red, color.red, color.red, color.red, color.red, color.red,
+    color.red, color.red, color.red, color.red, color.red, color.red, color.red, color.red, color.red, color.red,
+    color.red, color.red, color.red, color.red, color.red, color.red, color.red, color.red, color.red, color.red,
+    color.red, color.red, color.red, color.red, color.red, color.red, color.yellow, color.white, color.yellow,
+    color.red, color.red, color.red })
+local rainbowStone2 = Rainbow:new(1 / 30,
+  { color.blue, color.blue, color.blue, color.blue, color.blue, color.blue, color.blue, color.blue, color.blue,
+    color.blue, color.blue, color.blue, color.blue, color.blue, color.blue, color.blue, color.blue, color.blue,
+    color.blue, color.blue, color.blue, color.blue, color.blue, color.blue, color.blue, color.blue, color.blue,
+    color.blue, color.blue, color.blue, color.blue, color.blue, color.blue, color.blue, color.blue, color.blue,
+    color.cyan, color.white, color.cyan, color.blue, color.blue, color.blue })
+
 local monolith = require "monolith.core".new({ ledColorBits = 3 })
 
 local musicSystem
@@ -117,16 +138,17 @@ function love.draw()
     local stone = board[i]
     local x = (i - 1) % 8
     local y = (i - 1 - x) / 8
-    love.graphics.setColor(1, 1, 1)
     if stone ~= 0 then
       if stone == -1 then
+        love.graphics.setColor(rainbowStone1:color(x + y):rgb())
         love.graphics.circle("fill", x * 16 + 8, y * 16 + 8, 6)
       end
       if stone == 1 then
-        love.graphics.circle("line", x * 16 + 8, y * 16 + 8, 6)
+        love.graphics.setColor(rainbowStone2:color(x + y):rgb())
+        love.graphics.circle("fill", x * 16 + 8, y * 16 + 8, 6)
       end
     end
-    love.graphics.setColor(0.5, 0.5, 0.5)
+    love.graphics.setColor(rainbowLine:color(x + y):rgb())
     love.graphics.rectangle("line", x * 16, y * 16, 16, 16)
   end
 
@@ -141,4 +163,5 @@ end
 
 function love.quit()
   musicSystem:gc()
+  require "util.open_launcher" ()
 end

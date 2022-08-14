@@ -9,7 +9,7 @@ function SoundChanger:new(musicSystem)
   for i = 1, 31 do
     changing[i] = 64
   end
-  return setmetatable({ musicSystem = musicSystem, changing = changing, timer = Timer:new(0.2) }, { __index = self })
+  return setmetatable({ musicSystem = musicSystem, changing = changing, timer = Timer:new(0.1) }, { __index = self })
 end
 
 function SoundChanger:setSoundControl(controlType, value)
