@@ -72,8 +72,8 @@ end
 
 local img1, img2
 function love.load()
-  img1 = love.graphics.newImage("assets/image/circle.png")
-  img2 = love.graphics.newImage("assets/image/check.png")
+  img1 = love.graphics.newImage("assets/image/check.png")
+  img2 = love.graphics.newImage("assets/image/circle.png")
 
   if require "util.osname" == "Linux" then
     for i, inp in ipairs(require "config.linux_input_settings") do monolith.input:setUserSetting(i, inp) end
