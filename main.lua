@@ -145,12 +145,6 @@ function love.draw()
     love.graphics.rectangle("line", x * 16, y * 16, 16, 16)
   end
 
-  --[[
-  local cornerStones = math.abs(board[1]) + math.abs(board[8]) + math.abs(board[64]) + math.abs(board[57]) + 1
-  if cornerStones ~= nowBgm then
-    changeBgm(cornerStones)
-  end
-  ]]
   if not operationTimer:isLimit() then
     love.graphics.setColor(rainbow:color():rgb())
     love.graphics.rectangle("line", cursorX * 16, cursorY * 16, 16, 16)
