@@ -24,7 +24,6 @@ const firestoreInit = async () => {
   }
 };
 
-// UnixドメインソケットでWebSocketを待ち受けるHTTPサーバー
 const hs: http.Server = http.createServer();
 
 let board: number[] = [
