@@ -1,28 +1,6 @@
 package.path = package.path .. ';' .. love.filesystem.getSource() .. '/lua_modules/share/lua/5.1/?.lua'
 package.cpath = package.cpath .. ';' .. love.filesystem.getSource() .. '/lua_modules/share/lua/5.1/?.so'
 
-local table2 = require "util.table2"
-local color = require "graphics.color"
-local Rainbow = require "graphics.rainbow"
-local rainbowLine = Rainbow:new(1 / 30,
-  { color.black, color.black, color.black, color.black, color.black, color.black, color.black, color.black, color.black,
-    color.black, color.black, color.black, color.black, color.black, color.black, color.black, color.black, color.black,
-    color.black, color.black, color.black, color.black, color.black, color.black, color.black, color.black, color.black,
-    color.black, color.black, color.black, color.black, color.black, color.black, color.blue, color.cyan, color.red,
-    color.yellow, color.white, color.yellow, color.red, color.cyan, color.blue })
-local rainbowStone1 = Rainbow:new(1 / 30,
-  { color.red, color.red, color.red, color.red, color.red, color.red, color.red, color.red, color.red, color.red,
-    color.red, color.red, color.red, color.red, color.red, color.red, color.red, color.red, color.red, color.red,
-    color.red, color.red, color.red, color.red, color.red, color.red, color.red, color.red, color.red, color.red,
-    color.red, color.red, color.red, color.red, color.red, color.red, color.yellow, color.white, color.yellow,
-    color.red, color.red, color.red })
-local rainbowStone2 = Rainbow:new(1 / 30,
-  { color.blue, color.blue, color.blue, color.blue, color.blue, color.blue, color.blue, color.blue, color.blue,
-    color.blue, color.blue, color.blue, color.blue, color.blue, color.blue, color.blue, color.blue, color.blue,
-    color.blue, color.blue, color.blue, color.blue, color.blue, color.blue, color.blue, color.blue, color.blue,
-    color.blue, color.blue, color.blue, color.blue, color.blue, color.blue, color.blue, color.blue, color.blue,
-    color.cyan, color.white, color.cyan, color.blue, color.blue, color.blue })
-
 local monolith = require "monolith.core".new({ ledColorBits = 3 })
 
 local musicSystem
@@ -57,14 +35,13 @@ local function y_p()
 end
 
 local cursorMove = { { x_m, x_p, y_m, y_p }, { x_p, x_m, y_p, y_m }, { y_p, y_m, x_m, x_p }, { y_m, y_p, x_p, x_m } }
-local nowBgm = 1
-local function changeBgm(bgm)
-  local names = { "bgm", "bgm2", "bgm3", "bgm4", "bgm5" }
-  nowBgm = bgm
-  musicSystem:playAllPlayer(names[nowBgm])
-end
 
+
+local img1, img2
 function love.load()
+  img1 = love.graphics.newImage("assets/image/check.png")
+  img2 = love.graphics.newImage("assets/image/circle.png")
+
   if require "util.osname" == "Linux" then
     for i, inp in ipairs(require "config.linux_input_settings") do monolith.input:setUserSetting(i, inp) end
   else
@@ -75,14 +52,9 @@ function love.load()
   love.graphics.setLineStyle('rough')
 
   local devices, musicPathTable, priorityTable = unpack(require "config.music_data")
-  musicSystem = require("music-system"):new({ true, true, true, true }, devices, musicPathTable, priorityTable)
+  musicSystem = require("music.music_system"):new({ true, true, true, true }, devices, musicPathTable, priorityTable)
   soundChanger = require "sound-changer":new(musicSystem)
 
-  nowBgm = 1
-  musicSystem:playAllPlayer("bgm5")
-  musicSystem:playAllPlayer("bgm4")
-  musicSystem:playAllPlayer("bgm3")
-  musicSystem:playAllPlayer("bgm2")
   musicSystem:playAllPlayer("bgm")
 end
 
@@ -144,30 +116,28 @@ end
 
 function love.draw()
   monolith:beginDraw()
-
+  love.graphics.setColor(1, 1, 1)
   for i = 1, #board do
     local stone = board[i]
     local x = (i - 1) % 8
     local y = (i - 1 - x) / 8
     if stone ~= 0 then
       if stone == -1 then
-        love.graphics.setColor(rainbowStone1:color(x + y):rgb())
-        love.graphics.circle("fill", x * 16 + 8, y * 16 + 8, 6)
+        love.graphics.draw(img1, x * 16, y * 16)
       end
       if stone == 1 then
-        love.graphics.setColor(rainbowStone2:color(x + y):rgb())
-        love.graphics.circle("fill", x * 16 + 8, y * 16 + 8, 6)
+        love.graphics.draw(img2, x * 16, y * 16)
       end
     end
-    love.graphics.setColor(rainbowLine:color(x + y):rgb())
     love.graphics.rectangle("line", x * 16, y * 16, 16, 16)
   end
 
+  --[[
   local cornerStones = math.abs(board[1]) + math.abs(board[8]) + math.abs(board[64]) + math.abs(board[57]) + 1
   if cornerStones ~= nowBgm then
     changeBgm(cornerStones)
   end
-
+  ]]
   love.graphics.setColor(0, 1, 0)
   love.graphics.rectangle("line", cursorX * 16, cursorY * 16, 16, 16)
 
