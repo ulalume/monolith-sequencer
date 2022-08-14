@@ -65,7 +65,7 @@ local function changeBgm(bgm)
     table.insert(copiedContols, table2.copy(musicSystem.players[playerNum].musicTable[names[nowBgm]].controlls))
   end
 
-  musicSystem.stopAllPlayer(names[nowBgm])
+  musicSystem:stopAllPlayer(names[nowBgm])
   nowBgm = bgm
   musicSystem:playAllPlayer(names[nowBgm])
 
