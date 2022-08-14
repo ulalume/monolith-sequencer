@@ -60,19 +60,8 @@ local cursorMove = { { x_m, x_p, y_m, y_p }, { x_p, x_m, y_p, y_m }, { y_p, y_m,
 local nowBgm = 1
 local function changeBgm(bgm)
   local names = { "bgm", "bgm2", "bgm3", "bgm4", "bgm5" }
-  local copiedContols = {}
-  for playerNum = 1, #musicSystem.players do
-    table.insert(copiedContols, table2.copy(musicSystem.players[playerNum].musicTable[names[nowBgm]].controlls))
-  end
-
-  musicSystem:stopAllPlayer(names[nowBgm])
   nowBgm = bgm
   musicSystem:playAllPlayer(names[nowBgm])
-
-  for playerNum = 1, #musicSystem.players do
-    local player = musicSystem.players[playerNum]
-    player.synth:controlChangeAll(copiedContols[playerNum])
-  end
 end
 
 function love.load()
@@ -86,10 +75,14 @@ function love.load()
   love.graphics.setLineStyle('rough')
 
   local devices, musicPathTable, priorityTable = unpack(require "config.music_data")
-  musicSystem = require("music.music_system"):new({ true, true, true, true }, devices, musicPathTable, priorityTable)
+  musicSystem = require("music-system"):new({ true, true, true, true }, devices, musicPathTable, priorityTable)
   soundChanger = require "sound-changer":new(musicSystem)
 
   nowBgm = 1
+  musicSystem:playAllPlayer("bgm5")
+  musicSystem:playAllPlayer("bgm4")
+  musicSystem:playAllPlayer("bgm3")
+  musicSystem:playAllPlayer("bgm2")
   musicSystem:playAllPlayer("bgm")
 end
 
@@ -169,8 +162,8 @@ function love.draw()
     love.graphics.setColor(rainbowLine:color(x + y):rgb())
     love.graphics.rectangle("line", x * 16, y * 16, 16, 16)
   end
-  local cornerStones = math.abs(board[1]) + math.abs(board[8]) + math.abs(board[64]) + math.abs(board[57] + 1)
 
+  local cornerStones = math.abs(board[1]) + math.abs(board[8]) + math.abs(board[64]) + math.abs(board[57]) + 1
   if cornerStones ~= nowBgm then
     changeBgm(cornerStones)
   end

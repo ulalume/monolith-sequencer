@@ -1,42 +1,6 @@
 {
   "is_loop": true,
   "release_time": 0,
-
-  "controlls": {
-    "OSC_WAVE": 64,
-    "OSC_MIX": 64,
-    "OSC2_COARSE": 64,
-    "OSC2_FINE": 64,
-    "SUB_OSC_WAVE": 64,
-    "SUB_OSC_LEVEL": 64,
-    "PITCH_EG_AMT": 64,
-    "PITCH_EG_TGT": 64,
-    "FILTER_CUTOFF": 64,
-    "FILTER_RESO": 64,
-    "CUTOFF_EG_AMT": 64,
-    "AMP_EG_ON": 64,
-    "EG_ATTACK": 64,
-    "EG_DECAY": 64,
-    "EG_SUSTAIN": 64,
-    "EG_RELEASE": 64,
-    "LFO_WAVE": 64,
-    "LFO_RATE": 64,
-    "PITCH_LFO_AMT": 64,
-    "CO_LFO_AMT": 64,
-    "LFO_DEPTH": 64,
-    "LFO_RT_EG_AMT": 64,
-    "PITCH_LFO_TGT": 64,
-    "LFO_FADE_TIME": 64,
-    "PB_RANGE": 64,
-    "CO_EXP_AMT": 64,
-    "AMP_EXP_AMT": 64,
-    "PORTAMENTO": 64,
-    "LEGATO": 64,
-    "KEY_ASSIGN": 64,
-    "EXP_BY_VEL": 64
-  },
-  "dont_change_controlls": false,
-
   "events": [
     { "type": "note", "pitch": 76, "velocity": 80, "time": 0, "duration": 1.5 },
     {
