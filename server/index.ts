@@ -1,9 +1,11 @@
 import websocket from "ws";
 import http from "http";
 
-import { app } from "./app";
+import { initializeApp } from "firebase/app";
+import { firebaseConfig } from "./firebase-config";
 import { getFirestore, doc, onSnapshot } from "firebase/firestore";
 
+const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 const firestoreInit = async () => {
