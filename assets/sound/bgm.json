@@ -38,8 +38,10 @@
   "dont_change_controlls": false,
 
   "events": [
-    { "type": "note", "pitch": 66, "velocity": 80, "time": 0, "duration": 4 },
-    { "type": "note", "pitch": 61, "velocity": 70, "time": 4.0, "duration": 4 },
-    { "type": "note", "pitch": 54, "velocity": 80, "time": 8.0, "duration": 8 }
+    { "type": "note", "pitch": 66, "velocity": 100, "time": 0, "duration": 3 },
+    { "type": "note", "pitch": 68, "velocity": 60, "time": 3, "duration": 3 },
+    { "type": "note", "pitch": 70, "velocity": 60, "time": 6, "duration": 3 },
+    { "type": "note", "pitch": 73, "velocity": 60, "time": 9, "duration": 3 },
+    { "type": "note", "pitch": 42, "velocity": 0, "time": 12, "duration": 0 },
   ]
 }
