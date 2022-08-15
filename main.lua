@@ -118,11 +118,22 @@ function love.load()
   newConnection()
 end
 
+local sinIndex = 0
+
 function love.update(dt)
   client:update()
   musicSystem:update(dt)
   soundChanger:update(dt)
   operationTimer:executable(dt)
+
+
+  sinIndex = sinIndex + 1
+  local sinValue = (math.sin(sinIndex / 3.14 / 360 * 60 / 3) + 1) / 2;
+  local volume = math.max(0, math.min(math.ceil(sinValue * 128), 127))
+  for _, player in ipairs(musicSystem.players) do
+    player.synth:controlChange(7, volume)
+  end
+
 
   for i = 1, 4 do
     if monolith.input:getButtonDown(i, "a") then
@@ -215,7 +226,9 @@ end
 
 function love.quit()
   musicSystem:gc()
-  if require "util.osname" == "Linux" then
-    require "util.open_launcher" ()
-  end
+  --[[
+    if require "util.osname" == "Linux" then
+      require "util.open_launcher" ()
+    end
+  ]]
 end
