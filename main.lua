@@ -126,14 +126,15 @@ function love.update(dt)
   soundChanger:update(dt)
   operationTimer:executable(dt)
 
-
-  sinIndex = sinIndex + 1
-  local sinValue = (math.sin(sinIndex / 3.14 / 360 * 60 / 3) + 1) / 2;
-  local volume = math.max(0, math.min(math.ceil(sinValue * 128), 127))
-  for _, player in ipairs(musicSystem.players) do
-    player.synth:controlChange(7, volume)
-  end
-
+  --[[
+    sinIndex = sinIndex + 1
+    local sinValue = (math.sin(sinIndex / 3.14 / 360 * 60 / 3) + 1) / 2;
+    local volume = math.max(0, math.min(math.floor(sinValue * 128), 127))
+    for _, player in ipairs(musicSystem.players) do
+      player.synth:controlChange(26, volume)
+      print(volume)
+    end
+  ]]
 
   for i = 1, 4 do
     if monolith.input:getButtonDown(i, "a") then
@@ -183,7 +184,7 @@ function love.update(dt)
   for i = 1, #board / 2 do
     local v1 = (board[i * 2 - 1] + 1) * 3
     local v2 = (board[i * 2] + 1)
-    local v = math.min(math.ceil(((v1 + v2) / 8) * 128), 127)
+    local v = math.min(math.floor(((v1 + v2) / 8) * 128), 127)
 
     soundChanger:setSoundControl(i, v)
   end
