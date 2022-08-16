@@ -7,15 +7,15 @@ local color = require "graphics.color"
 local Rainbow = require "graphics.rainbow"
 local rainbow = Rainbow:new(1 / 20, { color.black, color.white })
 local rainbowLine = Rainbow:new(1 / 30,
-  { color.white, color.white, color.white, color.white, color.white, color.white, color.white, color.white, color.white,
-    color.white, color.white, color.white, color.white, color.white, color.white, color.white, color.white, color.white,
-    color.white, color.white, color.white, color.white, color.white, color.white, color.white, color.white, color.white,
-    color.white, color.white, color.white, color.white, color.white, color.white, color.white, color.white, color.white,
-    color.white, color.white, color.white, color.white, color.white, color.white, color.white, color.white, color.white,
-    color.white, color.white, color.white, color.white, color.white, color.white, color.white, color.white, color.white,
-    color.white, color.white, color.white, color.white, color.white, color.white, color.white, color.white, color.white,
-    color.white, color.white, color.white, color.white, color.white, color.white, color.white, color.white, color.white,
-    color.white, color.white, color.white, color.white, color.white, color.white, color.blue, color.cyan, color.red,
+  { color.black, color.black, color.black, color.black, color.black, color.black, color.black, color.black, color.black,
+    color.black, color.black, color.black, color.black, color.black, color.black, color.black, color.black, color.black,
+    color.black, color.black, color.black, color.black, color.black, color.black, color.black, color.black, color.black,
+    color.black, color.black, color.black, color.black, color.black, color.black, color.black, color.black, color.black,
+    color.black, color.black, color.black, color.black, color.black, color.black, color.black, color.black, color.black,
+    color.black, color.black, color.black, color.black, color.black, color.black, color.black, color.black, color.black,
+    color.black, color.black, color.black, color.black, color.black, color.black, color.black, color.black, color.black,
+    color.black, color.black, color.black, color.black, color.black, color.black, color.black, color.black, color.black,
+    color.black, color.black, color.black, color.black, color.black, color.black, color.blue, color.cyan, color.red,
     color.yellow, color.white, color.yellow, color.red, color.cyan, color.blue })
 local rainbowStone = Rainbow:new(1 / 30,
   { color.white, color.white, color.white, color.white, color.white, color.white, color.white, color.white, color.white,
@@ -30,6 +30,9 @@ local rainbowStone = Rainbow:new(1 / 30,
     color.white, color.white, color.white, color.white, color.white, color.white, color.white, color.yellow, color.cyan,
     color.blue,
     color.cyan, color.white, color.yellow, color.white })
+
+
+local rainbowSelectedLine = Rainbow:new(1 / 60)
 
 
 local monolith = require "monolith.core".new({ ledColorBits = 3 })
@@ -119,6 +122,8 @@ function love.load()
 end
 
 local sinIndex = 0
+local timerLine = require "util.timer":new(3, nil)
+local line = 0
 
 function love.update(dt)
   client:update()
@@ -126,6 +131,9 @@ function love.update(dt)
   soundChanger:update(dt)
   operationTimer:executable(dt)
 
+  if timerLine:executable(dt) then
+    line = (line + 1) % 8;
+  end
   --[[
     sinIndex = sinIndex + 1
     local sinValue = (math.sin(sinIndex / 3.14 / 360 * 60 / 3) + 1) / 2;
@@ -178,6 +186,14 @@ function love.update(dt)
       cursorMove[i][4]()
       operationTimer:reset()
     end
+
+    if monolith.input:getButtonDown(i, "left") then
+      line = (line - 1 + 8) % 8
+      timerLine:reset()
+    elseif monolith.input:getButtonDown(i, "right") then
+      line = (line + 1) % 8
+      timerLine:reset()
+    end
   end
 
   -- 2個ずつ取得
@@ -202,16 +218,21 @@ function love.draw()
     local y = (i - 1 - x) / 8
     if stone ~= 0 then
       if stone == -1 then
-        love.graphics.setColor(rainbowStone:color(x + y):rgb())
+        love.graphics.setColor(rainbowStone:color(-x):rgb())
         love.graphics.draw(img1, x * 16, y * 16)
       end
       if stone == 1 then
-        love.graphics.setColor(rainbowStone:color(x + y):rgb())
+        love.graphics.setColor(rainbowStone:color(-x):rgb())
         love.graphics.draw(img2, x * 16, y * 16)
       end
     end
-    love.graphics.setColor(rainbowLine:color(x + y):rgb())
+    --love.graphics.setColor(rainbowLine:color(-x):rgb())
+    love.graphics.setColor(0.5, 0.5, 0.5)
     love.graphics.rectangle("line", x * 16, y * 16, 16, 16)
+  end
+  for y = 0, 8 do
+    love.graphics.setColor(rainbowSelectedLine:color():rgb())
+    love.graphics.rectangle("line", line * 16, y * 16, 16, 16)
   end
 
   if not operationTimer:isLimit() then
